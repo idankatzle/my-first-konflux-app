@@ -6,12 +6,7 @@ items:
     annotations:
       kubectl.kubernetes.io/last-applied-configuration: |
         {"apiVersion":"tekton.dev/v1","kind":"Task","metadata":{"annotations":{},"name":"build-buildah-map-app","namespace":"idankatz-dev"},"spec":{"params":[{"name":"IMAGE","type":"string"}],"steps":[{"image":"registry.redhat.io/rhel8/buildah","name":"build-and-push","script":"set -e\n\necho \"Building image with Buildah\"\nbuildah bud \\\n  -f $(workspaces.source.path)/dev/Dockerfile \\\n  -t $(params.IMAGE) \\\n  $(workspaces.source.path)/dev\n\necho \"Pushing image\"\nbuildah push $(params.IMAGE)\n","securityContext":{"privileged":true}}],"workspaces":[{"name":"source"}]}}
-    creationTimestamp: "2026-01-28T12:28:40Z"
-    generation: 1
     name: build-buildah-map-app
-    namespace: idankatz-dev
-    resourceVersion: "7184929371"
-    uid: 2922badc-433c-439e-aab6-f4b59ef8e9a7
   spec:
     params:
     - name: IMAGE
@@ -41,12 +36,7 @@ items:
     annotations:
       kubectl.kubernetes.io/last-applied-configuration: |
         {"apiVersion":"tekton.dev/v1","kind":"Task","metadata":{"annotations":{},"name":"build-buildah-rootless-map-app","namespace":"idankatz-dev"},"spec":{"params":[{"name":"IMAGE","type":"string"}],"steps":[{"env":[{"name":"BUILDAH_ISOLATION","value":"chroot"}],"image":"registry.redhat.io/ubi9/buildah","name":"build-and-push","script":"set -e\n\necho \"Building image (rootless buildah)\"\nbuildah bud \\\n  --storage-driver=vfs \\\n  -f $(workspaces.source.path)/dev/Dockerfile \\\n  -t $(params.IMAGE) \\\n  $(workspaces.source.path)/dev\n\necho \"Pushing image\"\nbuildah push $(params.IMAGE)\n","securityContext":{"runAsUser":1001}}],"workspaces":[{"name":"source"}]}}
-    creationTimestamp: "2026-01-28T12:30:49Z"
-    generation: 1
     name: build-buildah-rootless-map-app
-    namespace: idankatz-dev
-    resourceVersion: "7184938689"
-    uid: 5da4dd3c-9dc4-42db-b51e-0157338ebb77
   spec:
     params:
     - name: IMAGE
@@ -80,12 +70,7 @@ items:
     annotations:
       kubectl.kubernetes.io/last-applied-configuration: |
         {"apiVersion":"tekton.dev/v1","kind":"Task","metadata":{"annotations":{},"name":"build-kaniko-map-app","namespace":"idankatz-dev"},"spec":{"params":[{"name":"IMAGE","type":"string"}],"steps":[{"image":"gcr.io/kaniko-project/executor:debug","name":"build-and-push","script":"#!/busybox/sh\nset -e\n\necho \"Starting Kaniko build\"\necho \"Image: $(params.IMAGE)\"\n\n/kaniko/executor \\\n  --dockerfile=$(workspaces.source.path)/dev/Dockerfile \\\n  --context=$(workspaces.source.path)/dev \\\n  --destination=$(params.IMAGE) \\\n  --cache=true \\\n  --skip-tls-verify-registry=image-registry.openshift-image-registry.svc:5000\n"}],"workspaces":[{"name":"source"}]}}
-    creationTimestamp: "2026-01-28T11:51:53Z"
-    generation: 8
     name: build-kaniko-map-app
-    namespace: idankatz-dev
-    resourceVersion: "7184918130"
-    uid: 5b9430e3-827e-493f-88cd-b4e37215e08b
   spec:
     params:
     - name: IMAGE
@@ -121,14 +106,9 @@ items:
       tekton.dev/pipelines.minVersion: 0.38.0
       tekton.dev/platforms: linux/amd64,linux/s390x,linux/ppc64le,linux/arm64
       tekton.dev/tags: git
-    creationTimestamp: "2026-01-25T07:38:16Z"
-    generation: 1
     labels:
       app.kubernetes.io/version: "0.9"
     name: git-clone
-    namespace: idankatz-dev
-    resourceVersion: "7164903506"
-    uid: 56a3b6f0-7fc1-4d8b-91d5-ff48b71f8f4d
   spec:
     description: |-
       These Tasks are Git tasks to work with repositories used by other tasks in your Pipeline.
@@ -367,12 +347,7 @@ items:
     annotations:
       kubectl.kubernetes.io/last-applied-configuration: |
         {"apiVersion":"tekton.dev/v1","kind":"Task","metadata":{"annotations":{},"name":"git-clone-local","namespace":"idankatz-dev"},"spec":{"params":[{"name":"repo_url","type":"string"}],"steps":[{"image":"alpine/git","name":"clone","script":"#!/bin/sh\nset -eux\n# 1. ניקוי מוחלט של ה-Workspace\nrm -rf $(workspaces.source.path)/*\nrm -rf $(workspaces.source.path)/.[!.]*\n\n# 2. ביצוע Clone ישירות לתוך ה-Workspace\n# שים לב לנקודה בסוף - היא קריטית כדי שלא תיווצר תיקיית משנה\ngit clone $(params.repo_url) $(workspaces.source.path)/.\n\n# 3. אימות (Verification) - זה מה שיעזור לנו לדבג\necho \"Check if Dockerfile exists:\"\nls -la $(workspaces.source.path)\n"}],"workspaces":[{"name":"source"}]}}
-    creationTimestamp: "2026-01-25T12:34:57Z"
-    generation: 1
     name: git-clone-local
-    namespace: idankatz-dev
-    resourceVersion: "7166189161"
-    uid: 21a7417a-0187-411b-a3f5-8d3e37df25a2
   spec:
     params:
     - name: repo_url
@@ -403,12 +378,7 @@ items:
     annotations:
       kubectl.kubernetes.io/last-applied-configuration: |
         {"apiVersion":"tekton.dev/v1beta1","kind":"Task","metadata":{"annotations":{},"name":"hello-task","namespace":"idankatz-dev"},"spec":{"steps":[{"image":"alpine","name":"list-files","script":"#!/bin/sh\necho \"--- Listing content of workspace ---\"\nif [ -d \"$(workspaces.task-workspace.path)\" ]; then\n  ls -R $(workspaces.task-workspace.path)\nelse\n  echo \"Workspace path not found!\"\n  exit 1\nfi\n"}],"workspaces":[{"description":"The directory where the files are located","name":"task-workspace"}]}}
-    creationTimestamp: "2026-01-25T12:35:19Z"
-    generation: 1
     name: hello-task
-    namespace: idankatz-dev
-    resourceVersion: "7166190635"
-    uid: 04fe1d97-c73c-4dfe-8fc7-b56a20898b79
   spec:
     steps:
     - computeResources: {}
@@ -432,12 +402,7 @@ items:
     annotations:
       kubectl.kubernetes.io/last-applied-configuration: |
         {"apiVersion":"tekton.dev/v1beta1","kind":"Task","metadata":{"annotations":{},"name":"openshift-client","namespace":"idankatz-dev"},"spec":{"params":[{"name":"SCRIPT","type":"string"}],"steps":[{"image":"quay.io/openshift/origin-cli:latest","name":"oc","script":"#!/usr/bin/env bash\n$(params.SCRIPT)\n","workingDir":"$(workspaces.source.path)"}],"workspaces":[{"name":"source"}]}}
-    creationTimestamp: "2026-01-25T13:04:24Z"
-    generation: 1
     name: openshift-client
-    namespace: idankatz-dev
-    resourceVersion: "7166315947"
-    uid: 0e3f08ef-9053-4841-bf5b-a57e068cbbff
   spec:
     params:
     - name: SCRIPT
@@ -454,4 +419,3 @@ items:
     - name: source
 kind: List
 metadata:
-  resourceVersion: ""

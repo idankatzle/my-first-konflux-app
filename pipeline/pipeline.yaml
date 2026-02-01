@@ -1,12 +1,7 @@
 apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
-  creationTimestamp: "2026-01-29T12:40:56Z"
-  generation: 11
   name: my-1
-  namespace: idankatz-dev
-  resourceVersion: "7208819791"
-  uid: 85a29013-3d5b-4971-aefc-4f037717f717
 spec:
   finally:
   - name: deploy-to-dev
