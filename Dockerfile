@@ -5,9 +5,7 @@ WORKDIR /app
 COPY index.html .
 COPY app.sh .
 
-RUN chmod +x /app/app.sh
-
 EXPOSE 8080
 
-CMD ["/app/app.sh"]
+CMD ["bash", "/app/app.sh"]
 
